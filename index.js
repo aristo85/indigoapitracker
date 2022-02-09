@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const { mongoConnect } = require("./util/database");
-const arthingRouts = require("./routes/arthingRouts");
 
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -51,7 +50,6 @@ app.use((req, res, next) => {
 // app.use("/private", privateRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/arthing", arthingRouts);
 
 // error handling
 app.use((error, req, res, next) => {
@@ -61,7 +59,7 @@ app.use((error, req, res, next) => {
 });
 
 // Establishing the port
-const PORT = process.env.PORT ||8080;
+const PORT = process.env.PORT ||8081;
 
 mongoConnect(() => {
   app.listen((PORT), () => {

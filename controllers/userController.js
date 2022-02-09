@@ -61,6 +61,31 @@ exports.getUserByUsername = async (req, res, next) => {
   }
 };
 
+exports.upadateUserApiTracker = async (req, res, next) => {
+  const { type, route, accessKey } = req.body;
+  const createdAt = new Date().getTime();
+  try {
+    const user = await User.findUserByAccessKey(accessKey);
+
+    if (!user) {
+      const error = new Error("Wrong Access-code!");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    await User.updateUserApikeyTracker(accessKey, {
+      type,
+      route,
+      accessKey,
+      createdAt,
+    });
+    res.status(200).json({ message: "succeed" });
+  } catch (error) {
+    error.statusCode = error.statusCode ?? 500;
+    next(error);
+  }
+};
+
 // exports.getUsers = async (req, res, next) => {
 //     try {
 //       const users = await User.fetchAll();

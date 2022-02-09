@@ -1,11 +1,13 @@
-const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const uuidv4 = require("uuid");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { config } = require("../config");
 
 exports.singup = async (req, res, next) => {
   const { username, email, password, name, wallet } = req.body;
   const createdAt = new Date().getTime();
+  const accessKey = uuidv4.v4();
 
   try {
     const isUser = await User.findByEmailUsernameWallet(
@@ -23,7 +25,15 @@ exports.singup = async (req, res, next) => {
     }
 
     const hashedPass = await bcrypt.hash(password, 12);
-    const user = new User(username, email, hashedPass, name, wallet, createdAt);
+    const user = new User(
+      username,
+      email,
+      hashedPass,
+      name,
+      wallet,
+      accessKey,
+      createdAt
+    );
     const result = await user.save();
     const token = jwt.sign(
       {
@@ -33,7 +43,7 @@ exports.singup = async (req, res, next) => {
       config.jwtSecret,
       { expiresIn: "1h" }
     );
-    res.status(201).json({ message: "User created", token });
+    res.status(201).json({ message: "User created", token, accessKey });
   } catch (error) {
     error.statusCode = error.statusCode ?? 500;
     next(error);
@@ -68,7 +78,9 @@ exports.login = async (req, res, next) => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ token, userId: foundUser._id });
+    res
+      .status(200)
+      .json({ token, userId: foundUser._id, accessKey: foundUser.accessKey });
   } catch (error) {
     error.statusCode = error.statusCode ?? 500;
     next(error);

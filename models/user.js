@@ -4,12 +4,13 @@ const { getDb } = require("../util/database");
 const ObjectId = mongodb.ObjectId;
 
 class User {
-  constructor(username, email, password, name, wallet, createdAt) {
+  constructor(username, email, password, name, wallet, accessKey, createdAt) {
     this.username = username;
     this.email = email;
     this.password = password;
     this.name = name;
     this.wallet = wallet;
+    this.accessKey = accessKey;
     this.createdAt = createdAt;
   }
 
@@ -35,6 +36,18 @@ class User {
         $currentDate: { lastModified: true },
       }
     );
+  }
+
+  static updateUserApikeyTracker(accessKey, apiTracker) {
+    const db = getDb();
+    return db
+      .collection("users")
+      .updateOne({ accessKey }, { $push: { apiTracker } });
+  }
+
+  static findUserByAccessKey(accessKey) {
+    const db = getDb();
+    return db.collection("users").findOne({ accessKey });
   }
 
   static findById(userId) {

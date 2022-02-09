@@ -4,6 +4,7 @@ const {
   getUserByWallet,
   getUserByUsername,
   updateUser,
+  upadateUserApiTracker,
   //   getUserByAny,
   //   getUsers,
 } = require("../controllers/userController");
@@ -23,7 +24,7 @@ const router = express.Router();
  *         - name
  *         - wallet
  *       properties:
- *         
+ *
  */
 
 /**
@@ -55,5 +56,6 @@ router.get("", isAuth, getUserById);
 router.get("/user-by-wallet", isAuth, getUserByWallet);
 router.get("/user-by-username", isAuth, getUserByUsername);
 router.patch("/update-name", isAuth, updateUser);
+router.patch("/api-tracker", upadateUserApiTracker);
 
 module.exports = router;
