@@ -60,8 +60,11 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message });
 });
 
+// Establishing the port
+const PORT = process.env.PORT ||8080;
+
 mongoConnect(() => {
-  app.listen((port = 8080), () => {
-    console.log(`starting server at ${port}`);
+  app.listen((PORT), () => {
+    console.log(`starting server at ${PORT}`);
   });
 });
