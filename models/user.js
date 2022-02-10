@@ -45,9 +45,11 @@ class User {
       .updateOne({ accessKey }, { $push: { apiTracker } });
   }
 
-  static findUserByAccessKey(accessKey) {
+  static findUserByAccessKey(accessKey, userId) {
     const db = getDb();
-    return db.collection("users").findOne({ accessKey });
+    return db
+      .collection("users")
+      .findOne({ accessKey, _id: new ObjectId(userId) });
   }
 
   static findById(userId) {

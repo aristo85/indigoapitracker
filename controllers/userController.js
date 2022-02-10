@@ -64,10 +64,10 @@ exports.getUserByUsername = async (req, res, next) => {
 };
 
 exports.upadateUserApiTracker = async (req, res, next) => {
-  const { type, route, accessKey } = req.body;
+  const { type, route, accessKey, accountId } = req.body;
   const createdAt = new Date().getTime();
   try {
-    const user = await User.findUserByAccessKey(accessKey);
+    const user = await User.findUserByAccessKey(accessKey, accountId);
 
     if (!user) {
       const error = new Error("Wrong Access-code!");
@@ -78,7 +78,6 @@ exports.upadateUserApiTracker = async (req, res, next) => {
     await User.updateUserApikeyTracker(accessKey, {
       type,
       route,
-      accessKey,
       createdAt,
     });
     res.status(200).json({ message: "succeed" });
