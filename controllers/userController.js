@@ -19,8 +19,10 @@ exports.getUserById = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-    const { _id, username, email, name, wallet, createdAt } = user;
-    res.status(200).json({ _id, username, email, name, wallet, createdAt });
+    const { _id, username, email, name, wallet, createdAt, apiTracker } = user;
+    res
+      .status(200)
+      .json({ _id, username, email, name, wallet, createdAt, apiTracker });
   } catch (error) {
     error.statusCode = error.statusCode ?? 500;
     next(error);
