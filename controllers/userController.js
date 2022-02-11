@@ -19,10 +19,28 @@ exports.getUserById = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-    const { _id, username, email, name, wallet, createdAt, apiTracker } = user;
+    const {
+      _id,
+      username,
+      email,
+      name,
+      wallet,
+      createdAt,
+      apiTracker,
+      accessKey,
+    } = user;
     res
       .status(200)
-      .json({ _id, username, email, name, wallet, createdAt, apiTracker });
+      .json({
+        _id,
+        username,
+        email,
+        name,
+        wallet,
+        createdAt,
+        apiTracker,
+        accessKey,
+      });
   } catch (error) {
     error.statusCode = error.statusCode ?? 500;
     next(error);
@@ -64,6 +82,7 @@ exports.getUserByUsername = async (req, res, next) => {
 };
 
 exports.upadateUserApiTracker = async (req, res, next) => {
+  console.log(req.body);
   const { type, route, accessKey, accountId } = req.body;
   const createdAt = new Date().getTime();
   try {
