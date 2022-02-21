@@ -4,7 +4,16 @@ const { getDb } = require("../util/database");
 const ObjectId = mongodb.ObjectId;
 
 class User {
-  constructor(username, email, password, name, wallet, accessKey, createdAt) {
+  constructor(
+    username,
+    email,
+    password,
+    name,
+    wallet,
+    accessKey,
+    createdAt,
+    role
+  ) {
     this.username = username;
     this.email = email;
     this.password = password;
@@ -12,6 +21,7 @@ class User {
     this.wallet = wallet;
     this.accessKey = accessKey;
     this.createdAt = createdAt;
+    this.role = role;
   }
 
   save() {
@@ -103,6 +113,13 @@ class User {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  static updateAPITrackerDate(userId, apiTracker) {
+    const db = getDb();
+    return db
+      .collection("users")
+      .updateOne({ _id: new ObjectId(userId) }, { $set: { apiTracker } });
   }
 }
 

@@ -80,7 +80,12 @@ exports.login = async (req, res, next) => {
 
     res
       .status(200)
-      .json({ token, userId: foundUser._id, accessKey: foundUser.accessKey });
+      .json({
+        token,
+        userId: foundUser._id,
+        accessKey: foundUser.accessKey,
+        role: foundUser.role,
+      });
   } catch (error) {
     error.statusCode = error.statusCode ?? 500;
     next(error);

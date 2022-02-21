@@ -2,36 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const { mongoConnect } = require("./util/database");
 
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "API-KEYS",
-      version: "1.0.0",
-      description: "An API tracker",
-    },
-    servers: [
-      {
-        url: "http://localhost:8080",
-      },
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-    },
-  },
-
-  apis: ["./routes/*.js"],
-};
+const options = require("./util/swaggerOptions");
+const { singupAdmin } = require("./controllers/admin/authAdminController");
 
 const specs = swaggerJsDoc(options);
 
@@ -50,6 +27,7 @@ app.use((req, res, next) => {
 // app.use("/private", privateRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/billing", paymentRoutes);
 
 // error handling
 app.use((error, req, res, next) => {
@@ -59,10 +37,11 @@ app.use((error, req, res, next) => {
 });
 
 // Establishing the port
-const PORT = process.env.PORT ||8081;
+const PORT = process.env.PORT || 8081;
 
 mongoConnect(() => {
-  app.listen((PORT), () => {
+  singupAdmin("indigtest13@gmail.com");
+  app.listen(PORT, () => {
     console.log(`starting server at ${PORT}`);
   });
 });

@@ -5,6 +5,7 @@ const {
   getUserByUsername,
   updateUser,
   upadateUserApiTracker,
+  updateApiTrackerDates,
   //   getUserByAny,
   //   getUsers,
 } = require("../controllers/userController");
@@ -24,13 +25,34 @@ const router = express.Router();
  *         - name
  *         - wallet
  *       properties:
- *
+ *         _id:
+ *           type: string
+ *           description: The auto-generated id (account-ID)
+ *         username:
+ *           type: string
+ *         email:
+ *           type: string
+ *         name:
+ *           type: string
+ *         wallet:
+ *           type: string
+ *         accessKey:
+ *           type: string
+ *           description: access-code
+ *       example:
+ *         id: 123464
+ *         title: anyTitle
+ *         name: anyname
+ *         email: anyemail
+ *         username: anyusername
+ *         wallet: anywallet
+ *         accessKey: asdfasdf1231a3sdf
  */
 
 /**
  * @swagger
  * tags:
- *   name: Users
+ *   name: User
  *   description: the User managing APIs
  */
 
@@ -41,21 +63,21 @@ const router = express.Router();
  *     security:
  *       - bearerAuth: []
  *     summary: Returns user's account
- *     tags: [Users]
+ *     tags: [User]
  *     responses:
  *       200:
- *         description: Success
+ *         description: Current user's account
  *         content:
  *           application/json:
  *             schema:
- *               type: Object
- *               items:
- *                 $ref: '#/components/schemas/User'
+ *               type: object
+ *               $ref: '#/components/schemas/User'
  */
 router.get("", isAuth, getUserById);
 router.get("/user-by-wallet", isAuth, getUserByWallet);
 router.get("/user-by-username", isAuth, getUserByUsername);
 router.patch("/update-name", isAuth, updateUser);
 router.patch("/api-tracker", upadateUserApiTracker);
+router.put("/tracker-dates", isAuth, updateApiTrackerDates);
 
 module.exports = router;

@@ -29,18 +29,16 @@ exports.getUserById = async (req, res, next) => {
       apiTracker,
       accessKey,
     } = user;
-    res
-      .status(200)
-      .json({
-        _id,
-        username,
-        email,
-        name,
-        wallet,
-        createdAt,
-        apiTracker,
-        accessKey,
-      });
+    res.status(200).json({
+      _id,
+      username,
+      email,
+      name,
+      wallet,
+      createdAt,
+      apiTracker,
+      accessKey,
+    });
   } catch (error) {
     error.statusCode = error.statusCode ?? 500;
     next(error);
@@ -94,6 +92,12 @@ exports.upadateUserApiTracker = async (req, res, next) => {
       throw error;
     }
 
+    if (user.apiTracker?.length > 50) {
+      const error = new Error("Max API call exceeded");
+      error.statusCode = 403;
+      throw error;
+    }
+
     await User.updateUserApikeyTracker(accessKey, {
       type,
       route,
@@ -102,6 +106,21 @@ exports.upadateUserApiTracker = async (req, res, next) => {
     res.status(200).json({ message: "succeed" });
   } catch (error) {
     error.statusCode = error.statusCode ?? 500;
+    next(error);
+  }
+};
+
+exports.updateApiTrackerDates = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    const resp = user.apiTracker.map((el) => ({
+      ...el,
+      createdAt: el.createdAt + req.body.addTimeToAll,
+    }));
+    const result = await User.updateAPITrackerDate(req.userId, resp);
+    res.status(200).json(result);
+  } catch (error) {
+    error.statusCode = 500;
     next(error);
   }
 };
